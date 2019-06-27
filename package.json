@@ -1,0 +1,37 @@
+{
+  "name": "headlines",
+  "version": "1.0.0",
+  "description": "comment on the latest news articles",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "watch": "nodemon server.js",
+    "lint": "eslint --quiet .",
+    "test": "npm run lint && cross-env NODE_ENV=test mocha --reporter spec --exit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jlaceda/headlines.git"
+  },
+  "author": "John Michael Laceda",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jlaceda/headlines/issues"
+  },
+  "homepage": "https://github.com/jlaceda/headlines#readme",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "chai": "^4.2.0",
+    "cheerio": "^1.0.0-rc.3",
+    "cross-env": "^5.2.0",
+    "dotenv": "^8.0.0",
+    "eslint": "^6.0.1",
+    "eslint-config-prettier": "^6.0.0",
+    "eslint-plugin-prettier": "^3.1.0",
+    "express": "^4.17.1",
+    "express-handlebars": "^3.1.0",
+    "mocha": "^6.1.4",
+    "mongoose": "^5.6.1",
+    "prettier": "^1.18.2"
+  }
+}
