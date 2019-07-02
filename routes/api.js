@@ -14,10 +14,16 @@ router.get("/articles", (req, res) => {
     });
 });
 
-router.post("comment/:articleid", (req, res) => {
-  const newComment = req.body;
+router.put("/comment/:articleid", (req, res) => {
+  console.log(req);
+  const newComment = {
+    author: "Random User",
+    body: req.body.body
+  };
+  console.log(newComment);
   models.Comment.create(newComment)
     .then(comment => {
+      console.log(comment);
       return models.Article.findOneAndUpdate(
         { _id: req.params.articleid },
         { $push: { comments: comment._id } },
