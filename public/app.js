@@ -6,6 +6,7 @@
         return res.json();
       })
       .then(articles => {
+        articlesDiv.innerHTML = "";
         for (let i = 0; i < articles.length; i++) {
           const article = articles[i];
           const div = document.createElement("div");
@@ -19,7 +20,7 @@
             }
           }
           div.innerHTML = `
-          <h3>${article.headline}</h3>
+          <h2>${article.headline}</h2>
           <p>${article.summary}</p>
           ${commentsHtml}
           <button class="commentButton" data-id="${article._id}">comment</button>`;
