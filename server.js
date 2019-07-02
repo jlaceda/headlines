@@ -3,12 +3,14 @@ const express = require("express");
 const mongoose = require("mongoose");
 
 const app = express();
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 const PORT = process.env.PORT || 8080;
 
-const scrape = require("./routes/scrape");
-
-app.get("/", (req, res) => res.send("It Works!"));
-app.use("/scrape", scrape);
+app.use("/scrape", require("./routes/scrape"));
+app.use("/api", require("./routes/api"));
+app.use(express.static("public"));
 
 // define mongodb connection
 mongoose.connect(
