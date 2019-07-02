@@ -28,7 +28,7 @@ router.put("/comment/:articleid", (req, res) => {
         { _id: req.params.articleid },
         { $push: { comments: comment._id } },
         { new: true }
-      );
+      ).populate("comments");
     })
     .then(article => {
       res.json(article);
