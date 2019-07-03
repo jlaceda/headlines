@@ -8,7 +8,7 @@ setTimeout(() => {
     .catch(err => {
       console.error("Scrape Error:", err);
     });
-}, 500);
+}, 250);
 
 const addComment = (comment, articleId) => {
   fetch(`/api/comment/${articleId}`, {
@@ -57,52 +57,51 @@ const renderArticle = article => {
   }
 };
 
-(() => {
-  fetch("/api/articles")
-    .then(res => {
-      return res.json();
-    })
-    .then(articles => {
-      articlesDiv.innerHTML = "";
-      for (let i = 0; i < articles.length; i++) {
-        const article = articles[i];
-        renderArticle(article);
-      }
-    })
-    .then(() => {
-      const commentButtons = document.querySelectorAll(".commentButton");
-      for (let i = 0; i < commentButtons.length; i++) {
-        const commentButton = commentButtons[i];
-        const articleId = commentButton.getAttribute("data-id");
-        commentButton.addEventListener("click", event => {
-          event.preventDefault();
-          thisButton = event.target;
-          console.log(articleId);
-          const commentInput = document.createElement("input");
-          commentInput.setAttribute("type", "text");
-          commentInput.setAttribute(
-            "data-id",
-            thisButton.getAttribute("data-id")
-          );
-          thisButton.parentNode.insertBefore(
-            commentInput,
-            thisButton.nextSibling
-          );
-          thisButton.setAttribute("hidden", true);
-          commentInput.focus();
-          commentInput.addEventListener("keypress", event => {
-            const newComment = {
-              body: commentInput.value
-            };
-            if (event.key === "Enter") {
-              commentInput.value;
-              addComment(newComment, articleId);
-              thisButton.setAttribute("hidden", false);
-              commentInput.remove();
-            }
-          });
-        });
-      }
-    })
-    .catch(err => console.log(err));
+(async () => {
+  // initially render articles
+  const res = await fetch("/api/articles");
+  const articles = await res.json();
+  articlesDiv.innerHTML = "";
+  for (let i = 0; i < articles.length; i++) {
+    const article = articles[i];
+    renderArticle(article);
+  }
+  // comment button functionality:
+  const commentButtons = document.querySelectorAll(".commentButton");
+  for (let i = 0; i < commentButtons.length; i++) {
+    const commentButton = commentButtons[i];
+    const articleId = commentButton.getAttribute("data-id");
+    commentButton.addEventListener("click", event => {
+      event.preventDefault();
+      thisButton = event.target;
+
+      const commentInput = document.createElement("input");
+      commentInput.setAttribute("type", "text");
+      commentInput.setAttribute("data-id", thisButton.getAttribute("data-id"));
+      commentInput.setAttribute("placeholder", "Your Comment");
+
+      const authorInput = document.createElement("input");
+      authorInput.setAttribute("type", "text");
+      authorInput.setAttribute("data-id", thisButton.getAttribute("data-id"));
+      authorInput.setAttribute("placeholder", "Your Name (optional)");
+
+      thisButton.parentNode.insertBefore(commentInput, thisButton.nextSibling);
+      thisButton.parentNode.insertBefore(authorInput, thisButton.nextSibling);
+      thisButton.setAttribute("hidden", true);
+      authorInput.focus();
+
+      commentInput.addEventListener("keypress", event => {
+        const newComment = {
+          body: commentInput.value,
+          author: authorInput.value
+        };
+        if (event.key === "Enter") {
+          addComment(newComment, articleId);
+          thisButton.setAttribute("hidden", false);
+          commentInput.remove();
+          authorInput.remove();
+        }
+      });
+    });
+  }
 })();
