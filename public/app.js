@@ -38,7 +38,7 @@ const renderArticle = article => {
   if (article.comments.length > 0) {
     for (let j = 0; j < article.comments.length; j++) {
       const comment = article.comments[j];
-      commentsHtml += `<blockquote>${comment.body}<br>-<small>${comment.author}</small></blockquote>`;
+      commentsHtml += `<blockquote>${comment.body}<br>-<small>${comment.author}</small><br/><a class="removeComment" href="#"><sub><small>remove comment</small></sub></a></blockquote>`;
     }
   }
   div.innerHTML = `
@@ -55,6 +55,33 @@ const renderArticle = article => {
   } else {
     articlesDiv.prepend(div);
   }
+  // comment button functionality:
+  const commentButton = div.querySelector(".commentButton");
+  commentButton.addEventListener("click", event => {
+    event.preventDefault();
+    thisButton = event.target;
+    const commentInput = document.createElement("input");
+    commentInput.setAttribute("type", "text");
+    commentInput.setAttribute("data-id", thisButton.getAttribute("data-id"));
+    commentInput.setAttribute("placeholder", "Your Comment");
+    const authorInput = document.createElement("input");
+    authorInput.setAttribute("type", "text");
+    authorInput.setAttribute("data-id", thisButton.getAttribute("data-id"));
+    authorInput.setAttribute("placeholder", "Your Name (optional)");
+    thisButton.parentNode.insertBefore(commentInput, thisButton.nextSibling);
+    thisButton.parentNode.insertBefore(authorInput, thisButton.nextSibling);
+    thisButton.setAttribute("hidden", true);
+    authorInput.focus();
+    commentInput.addEventListener("keyup", event => {
+      if (event.key === "Enter") {
+        const newComment = {
+          body: commentInput.value,
+          author: authorInput.value
+        };
+        addComment(newComment, article._id);
+      }
+    });
+  });
 };
 
 (async () => {
@@ -65,43 +92,5 @@ const renderArticle = article => {
   for (let i = 0; i < articles.length; i++) {
     const article = articles[i];
     renderArticle(article);
-  }
-  // comment button functionality:
-  const commentButtons = document.querySelectorAll(".commentButton");
-  for (let i = 0; i < commentButtons.length; i++) {
-    const commentButton = commentButtons[i];
-    const articleId = commentButton.getAttribute("data-id");
-    commentButton.addEventListener("click", event => {
-      event.preventDefault();
-      thisButton = event.target;
-
-      const commentInput = document.createElement("input");
-      commentInput.setAttribute("type", "text");
-      commentInput.setAttribute("data-id", thisButton.getAttribute("data-id"));
-      commentInput.setAttribute("placeholder", "Your Comment");
-
-      const authorInput = document.createElement("input");
-      authorInput.setAttribute("type", "text");
-      authorInput.setAttribute("data-id", thisButton.getAttribute("data-id"));
-      authorInput.setAttribute("placeholder", "Your Name (optional)");
-
-      thisButton.parentNode.insertBefore(commentInput, thisButton.nextSibling);
-      thisButton.parentNode.insertBefore(authorInput, thisButton.nextSibling);
-      thisButton.setAttribute("hidden", true);
-      authorInput.focus();
-
-      commentInput.addEventListener("keypress", event => {
-        const newComment = {
-          body: commentInput.value,
-          author: authorInput.value
-        };
-        if (event.key === "Enter") {
-          addComment(newComment, articleId);
-          thisButton.setAttribute("hidden", false);
-          commentInput.remove();
-          authorInput.remove();
-        }
-      });
-    });
   }
 })();
