@@ -17,7 +17,7 @@ router.get("/articles", (req, res) => {
 router.put("/comment/:articleid", (req, res) => {
   console.log(req);
   const newComment = {
-    author: "Random User",
+    author: req.body.author,
     body: req.body.body
   };
   console.log(newComment);
