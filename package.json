@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/jlaceda/headlines#readme",
   "dependencies": {
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "chai": "^4.2.0",
     "cheerio": "^1.0.0-rc.3",
     "cross-env": "^5.2.0",
